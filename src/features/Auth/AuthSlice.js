@@ -31,6 +31,7 @@ export const registeAdmin = createAsyncThunk(
 export const loginAdmin = createAsyncThunk("auth/login", async (userData, thunkApi) => {
     try {
         const response = await axios.post(`${API_URL}/api/v1/admin/login`, userData, { withCredentials: true });
+        console.log("login response",response);
         return response.data;
     } catch (error) {
         const isValidationError = error.response?.status === 400;
