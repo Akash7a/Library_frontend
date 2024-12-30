@@ -1,6 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
+const API_URL = import.meta.VITE_API_URL || "http://localhost:3000";
+
 const initialState = {
     error: null,
     pending: false,
@@ -11,7 +13,7 @@ const initialState = {
 
 export const getStudents = createAsyncThunk("student/students", async (_, thunkApi) => {
     try {
-        const response = await axios.get("/api/v1/student/getStudents", { withCredentials: true });
+        const response = await axios.get(`${API_URL}/api/v1/student/getStudents`, { withCredentials: true });
         return response.data;
     } catch (error) {
         return thunkApi.rejectWithValue(error.response?.data || "Invalid token");
@@ -20,7 +22,7 @@ export const getStudents = createAsyncThunk("student/students", async (_, thunkA
 
 export const addStudents = createAsyncThunk("student/addStudents", async (userData, thunkApi) => {
     try {
-        const response = await axios.post("/api/v1/student/addNewStudent", userData, { withCredentials: true });
+        const response = await axios.post(`${API_URL}/api/v1/student/addNewStudent`, userData, { withCredentials: true });
         return response.data;
     } catch (error) {
         return thunkApi.rejectWithValue(error.response?.data || "Invalid token");
@@ -29,7 +31,7 @@ export const addStudents = createAsyncThunk("student/addStudents", async (userDa
 
 export const deleteStudent = createAsyncThunk("student/deleteStudent", async (studentId, thunkApi) => {
     try {
-        const response = await axios.delete(`/api/v1/student/delete/${studentId}`, { withCredentials: true });
+        const response = await axios.delete(`${API_URL}/api/v1/student/delete/${studentId}`, { withCredentials: true });
         return response.data;
     } catch (error) {
         return thunkApi.rejectWithValue(error.response?.data || "Invalid token");
@@ -38,7 +40,7 @@ export const deleteStudent = createAsyncThunk("student/deleteStudent", async (st
 
 export const updateStudent = createAsyncThunk("student/updateStudent", async ({ studentId, updateData }, thunkApi) => {
     try {
-        const response = await axios.put(`/api/v1/student/update/${studentId}`, updateData, { withCredentials: true });
+        const response = await axios.put(`${API_URL}/api/v1/student/update/${studentId}`, updateData, { withCredentials: true });
         return response.data;
     } catch (error) {
         return thunkApi.rejectWithValue(error.response?.data || "Invalid token");

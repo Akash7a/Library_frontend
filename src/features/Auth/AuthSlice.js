@@ -1,6 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
+
+const API_URL = import.meta.VITE_API_URL || "http://localhost:3000";
+
 const initialState = {
     admin: null,
     error: null,
@@ -14,7 +17,7 @@ export const registeAdmin = createAsyncThunk(
     "auth/register",
     async (userData, thunkApi) => {
         try {
-            const response = await axios.post("/api/v1/admin/register", userData, { withCredentials: true });
+            const response = await axios.post(`${API_URL}/api/v1/admin/register`, userData, { withCredentials: true });
             return response.data;
         } catch (error) {
             const isValidationError = error.response?.status === 400;
@@ -27,7 +30,7 @@ export const registeAdmin = createAsyncThunk(
 
 export const loginAdmin = createAsyncThunk("auth/login", async (userData, thunkApi) => {
     try {
-        const response = await axios.post("/api/v1/admin/login", userData, { withCredentials: true });
+        const response = await axios.post(`${API_URL}/api/v1/admin/login`, userData, { withCredentials: true });
         return response.data;
     } catch (error) {
         const isValidationError = error.response?.status === 400;
@@ -39,7 +42,7 @@ export const loginAdmin = createAsyncThunk("auth/login", async (userData, thunkA
 
 export const logoutAdmin = createAsyncThunk("auth/logout", async (_, thunkApi) => {
     try {
-        const response = await axios.get("/api/v1/admin/logout", { withCredentials: true });
+        const response = await axios.get(`${API_URL}/api/v1/admin/logout`, { withCredentials: true });
         return response.data;
     } catch (error) {
         const isValidationError = error.response?.status === 400;
@@ -55,7 +58,7 @@ export const loadAdminFromToken = createAsyncThunk("auth/load", async (_, thunkA
     if (!token) return thunkApi.rejectWithValue("No token found");
 
     try {
-        const response = await axios.get("/api/v1/admin/getProfile", {
+        const response = await axios.get(`${API_URL}/api/v1/admin/getProfile`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
