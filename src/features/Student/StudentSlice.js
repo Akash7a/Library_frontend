@@ -1,7 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const API_URL = import.meta.VITE_API_URL || "https://library-app-backend-2.onrender.com";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+console.log(API_URL); // This should log your API URL
 
 const initialState = {
     error: null,
@@ -14,6 +15,7 @@ const initialState = {
 export const getStudents = createAsyncThunk("student/students", async (_, thunkApi) => {
     try {
         const response = await axios.get(`${API_URL}/api/v1/student/getStudents`, { withCredentials: true });
+        console.log("response",response)
         return response.data;
     } catch (error) {
         return thunkApi.rejectWithValue(error.response?.data || "Invalid token");

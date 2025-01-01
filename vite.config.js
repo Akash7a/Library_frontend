@@ -16,5 +16,6 @@ export default defineConfig({
       '/api': apiUrl, // Proxy API requests to backend server
     }
   },
+  mode:"production",
   plugins: [react()],
 });

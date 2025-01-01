@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 
-const API_URL = import.meta.VITE_API_URL || "https://library-app-backend-2.onrender.com";
+const API_URL = import.meta.VITE_API_URL || 3000;
 
 const initialState = {
     admin: null,
