@@ -7,6 +7,8 @@ const Register = () => {
     const [username, setUserName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [file, setFile] = useState(null);
+
     const dispatch = useDispatch();
     const token = localStorage.getItem("token");
     const navigate = useNavigate();
@@ -14,25 +16,22 @@ const Register = () => {
     const submitHandler = (e) => {
         e.preventDefault();
 
-        // Avoid submitting empty data
-        if (username === "" || email === "" || password === "") return;
+        if (username === "" || email === "" || password === "" || !file) return;
 
-        const submitedUserData = {
-            username,
-            email,
-            password
-        };
+        const formData = new FormData();
+        formData.append("username", username);
+        formData.append("email", email);
+        formData.append("password", password);
+        formData.append("profilePic", file);
 
-        // Dispatch the registration action
-        dispatch(registeAdmin(submitedUserData));
+        dispatch(registeAdmin(formData));
 
-        // Clear input fields after submission
         setUserName("");
         setEmail("");
         setPassword("");
+        setFile(null);
     };
 
-    // Check if token exists and redirect to home page
     useEffect(() => {
         if (token) {
             navigate("/home");
@@ -72,6 +71,15 @@ const Register = () => {
                         placeholder="Enter Your Password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                        required
+                        className="w-full px-4 py-2 rounded-lg bg-gray-700 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                </div>
+                <div className="mb-6">
+                    <label htmlFor="profilePic" className="block text-gray-300 mb-2">Profile Pic</label>
+                    <input
+                        type="file"
+                        onChange={(e) => setFile(e.target.files[0])}
                         required
                         className="w-full px-4 py-2 rounded-lg bg-gray-700 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />

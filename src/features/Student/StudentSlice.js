@@ -1,8 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
-console.log(API_URL); // This should log your API URL
+const API_URL = import.meta.env.VITE_APP_URL || "http://localhost:3000";
 
 const initialState = {
     error: null,
@@ -15,7 +14,7 @@ const initialState = {
 export const getStudents = createAsyncThunk("student/students", async (_, thunkApi) => {
     try {
         const response = await axios.get(`${API_URL}/api/v1/student/getStudents`, { withCredentials: true });
-        console.log("response",response)
+        console.log("get student response", response)
         return response.data;
     } catch (error) {
         return thunkApi.rejectWithValue(error.response?.data || "Invalid token");
@@ -25,6 +24,7 @@ export const getStudents = createAsyncThunk("student/students", async (_, thunkA
 export const addStudents = createAsyncThunk("student/addStudents", async (userData, thunkApi) => {
     try {
         const response = await axios.post(`${API_URL}/api/v1/student/addNewStudent`, userData, { withCredentials: true });
+        console.log("adding student response");
         return response.data;
     } catch (error) {
         return thunkApi.rejectWithValue(error.response?.data || "Invalid token");
@@ -43,12 +43,37 @@ export const deleteStudent = createAsyncThunk("student/deleteStudent", async (st
 export const updateStudent = createAsyncThunk("student/updateStudent", async ({ studentId, updateData }, thunkApi) => {
     try {
         const response = await axios.put(`${API_URL}/api/v1/student/update/${studentId}`, updateData, { withCredentials: true });
+        console.log("update response", response.data)
         return response.data;
     } catch (error) {
         return thunkApi.rejectWithValue(error.response?.data || "Invalid token");
     }
-})
+});
 
+export const markStudentAttendance = createAsyncThunk("student/studentAttendance", async ({ studentId }, thunkApi) => {
+    try {
+        const response = await axios.post(`${API_URL}/api/v1/student/markAttendance/${studentId}`,{}, { withCredentials: true });
+        console.log("attendance response", response.data);
+        return response.data;
+    } catch (error) {
+        return thunkApi.rejectWithValue(error.response?.data || "Invalid token");
+    }
+});
+export const showStudentAttendance = createAsyncThunk(
+    "student/showAttendance",
+    async ({ studentId }, thunkApi) => {
+      try {
+        const response = await axios.get(
+          `${API_URL}/api/v1/student/showStudentAttendance/${studentId}`,
+          { withCredentials: true }
+        );
+        console.log("show attendance response", response.data);
+        return response.data;
+      } catch (error) {
+        return thunkApi.rejectWithValue(error.response?.data || "Invalid token");
+      }
+    }
+  );
 const studentSlice = createSlice({
     name: "student",
     initialState,
@@ -90,6 +115,8 @@ const studentSlice = createSlice({
                 state.success = true;
                 state.students = action.payload.myStudents;
                 state.message = action.payload?.message || "Student added successfully.";
+
+                thunkApi.dispatch(getStudents());
             })
             .addCase(addStudents.rejected, (state, action) => {
                 state.pending = false;
@@ -127,15 +154,52 @@ const studentSlice = createSlice({
                 state.message = action.payload?.message || "Student updated successfully.";
 
                 const updatedStudent = action.payload.student;
-                state.students = state.students.map(student => 
-                  student._id === updatedStudent._id ? updatedStudent : student
+                state.students = state.students.map(student =>
+                    student._id === updatedStudent._id ? updatedStudent : student
                 );
             })
             .addCase(updateStudent.rejected, (state, action) => {
                 state.pending = false;
                 state.error = action.payload;
                 state.message = "Failed to update student.";
+            });
+        builder
+            .addCase(markStudentAttendance.pending, (state) => {
+                state.pending = true;
+                state.message = "Marking attendance...";
             })
+            .addCase(markStudentAttendance.fulfilled, (state, action) => {
+                state.pending = false;
+                state.error = null;
+                state.message = action.payload?.message || "Attendance marked successfully.";
+            
+                const updatedStudent = action.payload.student;
+            
+                state.students = state.students.map(student => student._id === updatedStudent._id ? updatedStudent : student);
+            
+            })
+            .addCase(markStudentAttendance.rejected, (state, action) => {
+                state.pending = false;
+                state.error = action.payload;
+                state.message = action.payload?.message || "Failled to mark attendance";
+            });
+        builder
+            .addCase(showStudentAttendance.pending,(state)=>{
+                state.pending = true;
+                state.message = "Fetching attendance...";
+            })
+            .addCase(showStudentAttendance.fulfilled,(state,action)=>{
+                state.pending = false;
+                state.error = null;
+                state.success = true;
+                state.message = action.payload?.message || "Attendance fetched successfully.";
+                state.students = action.payload.student || [];
+            })
+            .addCase(showStudentAttendance.rejected,(state,action)=>{
+                state.pending = false;
+                state.error = action.payload;
+                state.message = action.payload?.message || "Failed to fetch attendance";
+            });
     }
 });
 

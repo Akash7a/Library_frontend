@@ -13,6 +13,7 @@ const Navbar = () => {
           <div className="space-x-4">
             <Link to="/" className="text-white hover:text-gray-200">Home</Link>
             <Link to="/addNewStudent" className="text-white hover:text-gray-200">Add Student</Link>
+            <Link to="/setting" className='text-white hover:text-gray-200'>Setting</Link>
           </div>
         </div>
       </nav>

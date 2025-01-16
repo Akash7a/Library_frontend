@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addStudents, clearSuccess, clearError } from '../features/Student/StudentSlice.js';
+import { useNavigate } from 'react-router-dom';
 
 const AddStudentForm = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { pending, success, error, message } = useSelector((state) => state.auth);
 
   const [student, setStudent] = useState({
     name: '',
     address: '',
     mobile: '',
+    email:'',
+    password:'',
     entryDate: '',
     subscriptionEndDate: '',
     shift: '',
@@ -33,13 +37,16 @@ const AddStudentForm = () => {
       name: '',
       address: '',
       mobile: '',
+      email:'',
+      password:'',
       entryDate: '',
       subscriptionEndDate: '',
       shift: '',
       reservedSeat: false,
       isSubscriptionActive: false,
     });
-
+   
+    navigate("/home")
     setTimeout(() => {
       dispatch(clearSuccess());
       dispatch(clearError());
@@ -92,6 +99,30 @@ const AddStudentForm = () => {
             required
           />
         </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium mb-2" htmlFor="mobile">Email</label>
+          <input
+            type="text"
+            id="email"
+            name="email"
+            value={student.email}
+            onChange={handleChange}
+            className="w-full p-2 border border-gray-300 rounded"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium mb-2" htmlFor="mobile">Password</label>
+          <input
+            type="text"
+            id="password"
+            name="password"
+            value={student.password}
+            onChange={handleChange}
+            className="w-full p-2 border border-gray-300 rounded"
+            required
+          />
+        </div>
 
         <div className="mb-4">
           <label className="block text-sm font-medium mb-2" htmlFor="entryDate">Entry Date</label>
@@ -131,6 +162,7 @@ const AddStudentForm = () => {
           >
             <option value="">Select Shift</option>
             <option value="morning">Morning</option>
+            <option value="afternoon">Afternoon</option>
             <option value="evening">Evening</option>
           </select>
         </div>

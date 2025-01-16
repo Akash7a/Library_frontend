@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 
-const API_URL = import.meta.VITE_API_URL || 3000;
+const API_URL = import.meta.VITE_API_URL || "http://localhost:3000";
 
 const initialState = {
     admin: null,
@@ -18,6 +18,7 @@ export const registeAdmin = createAsyncThunk(
     async (userData, thunkApi) => {
         try {
             const response = await axios.post(`${API_URL}/api/v1/admin/register`, userData, { withCredentials: true });
+            console.log("register response",response)
             return response.data;
         } catch (error) {
             const isValidationError = error.response?.status === 400;
@@ -31,7 +32,7 @@ export const registeAdmin = createAsyncThunk(
 export const loginAdmin = createAsyncThunk("auth/login", async (userData, thunkApi) => {
     try {
         const response = await axios.post(`${API_URL}/api/v1/admin/login`, userData, { withCredentials: true });
-        console.log("login response",response);
+        console.log("Login response",response)
         return response.data;
     } catch (error) {
         const isValidationError = error.response?.status === 400;
@@ -43,7 +44,12 @@ export const loginAdmin = createAsyncThunk("auth/login", async (userData, thunkA
 
 export const logoutAdmin = createAsyncThunk("auth/logout", async (_, thunkApi) => {
     try {
-        const response = await axios.get(`${API_URL}/api/v1/admin/logout`, { withCredentials: true });
+        const response = await axios.get(`${API_URL}/api/v1/admin/logout`, {
+            withCredentials: true, headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            }
+        });
+        console.log("logout response",response)
         return response.data;
     } catch (error) {
         const isValidationError = error.response?.status === 400;
@@ -64,6 +70,7 @@ export const loadAdminFromToken = createAsyncThunk("auth/load", async (_, thunkA
                 Authorization: `Bearer ${token}`
             }
         });
+        console.log("Admin Response",response.data);
         return response.data;
     } catch (error) {
         return thunkApi.rejectWithValue(error.response?.data || "Invalid token");
