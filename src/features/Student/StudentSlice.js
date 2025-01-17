@@ -14,7 +14,6 @@ const initialState = {
 export const getStudents = createAsyncThunk("student/students", async (_, thunkApi) => {
     try {
         const response = await axios.get(`${API_URL}/api/v1/student/getStudents`, { withCredentials: true });
-        console.log("get student response", response)
         return response.data;
     } catch (error) {
         return thunkApi.rejectWithValue(error.response?.data || "Invalid token");
@@ -24,7 +23,6 @@ export const getStudents = createAsyncThunk("student/students", async (_, thunkA
 export const addStudents = createAsyncThunk("student/addStudents", async (userData, thunkApi) => {
     try {
         const response = await axios.post(`${API_URL}/api/v1/student/addNewStudent`, userData, { withCredentials: true });
-        console.log("adding student response");
         return response.data;
     } catch (error) {
         return thunkApi.rejectWithValue(error.response?.data || "Invalid token");
@@ -43,7 +41,6 @@ export const deleteStudent = createAsyncThunk("student/deleteStudent", async (st
 export const updateStudent = createAsyncThunk("student/updateStudent", async ({ studentId, updateData }, thunkApi) => {
     try {
         const response = await axios.put(`${API_URL}/api/v1/student/update/${studentId}`, updateData, { withCredentials: true });
-        console.log("update response", response.data)
         return response.data;
     } catch (error) {
         return thunkApi.rejectWithValue(error.response?.data || "Invalid token");
@@ -53,7 +50,6 @@ export const updateStudent = createAsyncThunk("student/updateStudent", async ({ 
 export const markStudentAttendance = createAsyncThunk("student/studentAttendance", async ({ studentId }, thunkApi) => {
     try {
         const response = await axios.post(`${API_URL}/api/v1/student/markAttendance/${studentId}`,{}, { withCredentials: true });
-        console.log("attendance response", response.data);
         return response.data;
     } catch (error) {
         return thunkApi.rejectWithValue(error.response?.data || "Invalid token");
@@ -67,7 +63,6 @@ export const showStudentAttendance = createAsyncThunk(
           `${API_URL}/api/v1/student/showStudentAttendance/${studentId}`,
           { withCredentials: true }
         );
-        console.log("show attendance response", response.data);
         return response.data;
       } catch (error) {
         return thunkApi.rejectWithValue(error.response?.data || "Invalid token");
@@ -113,8 +108,9 @@ const studentSlice = createSlice({
                 state.pending = false;
                 state.error = null;
                 state.success = true;
-                state.students = action.payload.myStudents;
                 state.message = action.payload?.message || "Student added successfully.";
+                const newStudent = action.payload.student;
+                state.students = [newStudent,...state.students];
             })
             .addCase(addStudents.rejected, (state, action) => {
                 state.pending = false;
