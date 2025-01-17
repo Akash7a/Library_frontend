@@ -99,7 +99,7 @@ const authSlice = createSlice({
             .addCase(registeAdmin.fulfilled, (state, action) => {
                 state.pending = false;
                 state.success = true;
-                state.admin = action.payload;
+                state.admin = action.payload.admin;
                 state.message = action.payload.message || "Admin registered successfully";
                 state.token = action.payload.token || null;
 
@@ -121,8 +121,8 @@ const authSlice = createSlice({
                 state.pending = false;
                 state.error = null;
                 state.success = true;
-                state.message = action.payload;
-                state.admin = action.payload;
+                state.message = action.payload.message;
+                state.admin = action.payload.admin;
                 state.token = action.payload.token || null;
 
                 if (action.payload.token) {

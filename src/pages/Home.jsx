@@ -13,6 +13,8 @@ const Home = () => {
   useEffect(() => {
     dispatch(getStudents());
   }, [dispatch]);
+  
+  console.log("admin",admin)
 
   useEffect(()=>{
    if(!admin){
@@ -42,7 +44,7 @@ const Home = () => {
         <div className="flex items-center justify-between max-w-7xl mx-auto">
           <h1 className="text-3xl font-semibold text-indigo-700">Student Dashboard</h1>
           <div className="text-lg text-indigo-600">
-            Welcome, {admin?.username || 'Admin not found.'}
+            Welcome, {admin.username || 'Admin not found.'}
           </div>
         </div>
       </div>

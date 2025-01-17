@@ -115,8 +115,6 @@ const studentSlice = createSlice({
                 state.success = true;
                 state.students = action.payload.myStudents;
                 state.message = action.payload?.message || "Student added successfully.";
-
-                thunkApi.dispatch(getStudents());
             })
             .addCase(addStudents.rejected, (state, action) => {
                 state.pending = false;

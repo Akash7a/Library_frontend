@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 const AddStudentForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { pending, success, error, message } = useSelector((state) => state.auth);
+  const { pending, success, error, message ,admin} = useSelector((state) => state.auth);
 
   const [student, setStudent] = useState({
     name: '',
@@ -53,6 +53,9 @@ const AddStudentForm = () => {
     }, 5000);
   };
 
+  if(!admin){
+    return <div>Loading...</div>
+  }
   return (
     <div className="min-h-screen bg-gray-50 p-5 flex items-center justify-center">
       <form
@@ -200,6 +203,11 @@ const AddStudentForm = () => {
         >
           {pending ? "Adding..." : "Add Student"}
         </button>
+
+        {
+          console.log("Message",message)
+        }
+        
 
         {success && <p className="mt-4 text-green-600">{message || "Student added successfully!"}</p>}
         {error && <p className="mt-4 text-red-600">{message || "An error occurred"}</p>}
